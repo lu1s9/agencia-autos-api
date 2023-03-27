@@ -1,4 +1,5 @@
 import { pool } from "../config/db.js";
+import { vehicleSchema } from "../validators/vehicleSchema.js";
 
 export const getVehicles = async (req, res) => {
   let conn;
@@ -7,7 +8,7 @@ export const getVehicles = async (req, res) => {
     const result = await conn.query("SELECT * FROM Vehiculos");
     res.json(result);
   } catch (error) {
-    return res.status(500).json({ message: "Algo ha ido mal d" });
+    return res.status(500).json({ message: "Algo ha ido mal" });
   } finally {
     if (conn) conn.release();
   }
@@ -21,7 +22,7 @@ export const getVehicle = async (req, res) => {
       "SELECT * FROM Vehiculos WHERE id_vehiculo=?",
       [req.params.id]
     );
-    if (result.lenght <= 0) {
+    if (result.length <= 0) {
       return res.status(400).json({ message: "Vehiculo no encontrado" });
     }
     res.json(result[0]);
@@ -33,6 +34,10 @@ export const getVehicle = async (req, res) => {
 };
 
 export const createVehicle = async (req, res) => {
+  const { error, value } = vehicleSchema.validate(req.body);
+  if (error) {
+    return res.json(error.details);
+  }
   let conn;
   try {
     const {
@@ -45,7 +50,7 @@ export const createVehicle = async (req, res) => {
       precio,
       tipo,
       imagen,
-    } = req.body;
+    } = value;
     conn = await pool.getConnection();
     const result = await conn.query(
       "INSERT INTO Vehiculos(nombre, id_proveedor, anio, tipo_combustible, num_puertas, color, precio, tipo, imagen) value(?,?,?,?,?,?,?,?,?)",
@@ -74,13 +79,18 @@ export const createVehicle = async (req, res) => {
       imagen,
     });
   } catch (error) {
-    return res.status(500).json({ message: "Algo ha ido mal" });
+    // return res.status(500).json({ message: "Algo ha ido mal" });
+    return res.status(500).json(error);
   } finally {
     if (conn) conn.release();
   }
 };
 
 export const updateVehicle = async (req, res) => {
+  const { error, value } = vehicleSchema.validate(req.body);
+  if (error) {
+    return res.json(error.details);
+  }
   let conn;
   try {
     const { id } = req.params;
@@ -94,10 +104,10 @@ export const updateVehicle = async (req, res) => {
       precio,
       tipo,
       imagen,
-    } = req.body;
+    } = value;
     conn = await pool.getConnection();
     const result = await conn.query(
-      "UPDATE Vehiculos SET nombre=? ,id_proveedor=?, anio=?, tipo_combustible=?, num_puertas=?, color=?, precio=?, tipo=?, imagen=?",
+      "UPDATE Vehiculos SET nombre=? ,id_proveedor=?, anio=?, tipo_combustible=?, num_puertas=?, color=?, precio=?, tipo=?, imagen=? WHERE id_vehiculo=?",
       [
         nombre,
         id_proveedor,
@@ -108,6 +118,7 @@ export const updateVehicle = async (req, res) => {
         precio,
         tipo,
         imagen,
+        id,
       ]
     );
     if (result.affectedRows === 0) {
