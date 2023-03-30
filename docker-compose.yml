@@ -14,8 +14,6 @@ services:
       - PORT=3000
     links:
       - mariadb
-    volumes:
-      - .:/app
   mariadb:
     image: mariadb:latest
     ports:
