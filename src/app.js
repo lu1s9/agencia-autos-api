@@ -1,4 +1,5 @@
 import express from "express";
+import notFound from "./middlewares/notFound.js";
 
 const app = express();
 
@@ -10,10 +11,6 @@ import providerRoutes from "./routes/providers.routes.js";
 app.use("/vehiculos", vehicleRoutes);
 app.use("/proveedores", providerRoutes);
 
-app.use((req, res, next) => {
-  res.status(404).json({
-    message: "Ruta no encontrada",
-  });
-});
+app.use(notFound);
 
 export default app;
