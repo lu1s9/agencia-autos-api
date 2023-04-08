@@ -1,5 +1,7 @@
 import Joi from "joi";
 
-export const providerSchema = Joi.object({
-  nombre: Joi.string().min(3).max(30).required(),
+const providerSchema = Joi.object({
+  nombre: Joi.string().trim().min(3).max(30).required(),
 });
+
+export default providerSchema;

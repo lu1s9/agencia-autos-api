@@ -1,4 +1,7 @@
 import { Router } from "express";
+import tryCatch from "../utils/tryCatch.js";
+import validation from "../middlewares/validationMiddleware.js";
+import providerSchema from "../validators/providerSchema.js";
 import {
   getProvider,
   getProviders,
@@ -9,10 +12,10 @@ import {
 
 const router = Router();
 
-router.get("/", getProviders);
-router.get("/:id", getProvider);
-router.post("/", createProvider);
-router.put("/:id", updateProvider);
-router.delete("/:id", deleteProvider);
+router.get("/", tryCatch(getProviders));
+router.get("/:id", tryCatch(getProvider));
+router.post("/", validation(providerSchema), tryCatch(createProvider));
+router.put("/:id", validation(providerSchema), tryCatch(updateProvider));
+router.delete("/:id", tryCatch(deleteProvider));
 
 export default router;
