@@ -37,10 +37,20 @@ export const updateProvider = async (req, res) => {
 };
 
 export const deleteProvider = async (req, res) => {
-  const result = await conn.query(
+  const result = await pool.query(
     "DELETE FROM Proveedores WHERE id_proveedor=?",
     [req.params.id]
   );
   if (result.affectedRows <= 0) throw new Error("Proveedor no encontrado");
   return res.sendStatus(204);
+};
+
+export const getProviderVehicles = async (req, res) => {
+  const result = await pool.query(
+    "SELECT v.id_vehiculo, v.nombre AS vehiculoNombre, p.id_proveedor, p.nombre AS proveedorNombre FROM Vehiculos v INNER JOIN Proveedores p ON v.id_proveedor= p.id_proveedor WHERE v.id_proveedor=?",
+    [req.params.id]
+  );
+  if (result.length <= 0)
+    throw new Error("Este proveedor no contiene vehiculos");
+  return res.json(result);
 };
