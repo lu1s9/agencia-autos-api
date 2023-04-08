@@ -18,7 +18,7 @@ cd agencia-autos-api
    > Recuerda estar en el directorio del proyecto al ejecutar los siguientes comandos.
    - Crear e iniciar contenedores
    ```shell
-   docker compose up -d
+   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
    ```
    - Comprobar que los contenedores se hayan iniciado correctamente
    ```shell

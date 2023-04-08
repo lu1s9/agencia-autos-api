@@ -15,7 +15,6 @@ services:
       - DB_PORT=3306
       - DB_DATABASE=agencia_autos
       - PORT=3000
-      - NODE_ENV=production
     links:
       - mariadb
   mariadb:
