@@ -1,14 +1,18 @@
 import { pool } from "../config/db.js";
 
 export const getVehicles = async (req, res) => {
-  const result = await pool.query("SELECT * FROM Vehiculos");
+  // const result = await pool.query("SELECT * FROM Vehiculos");
+  const result = await pool.query(
+    "SELECT v.id_vehiculo, v.nombre as vehiculoNombre, v.id_proveedor, p.nombre as proveedorNombre, v.anio, v.tipo_combustible, v.num_puertas, v.color, v.precio, v.tipo, v.imagen FROM Vehiculos v INNER JOIN Proveedores p ON v.id_proveedor = p.id_proveedor"
+  );
   if (result.length <= 0) throw new Error("No hay ningun vehiculo");
   return res.json(result);
 };
 
 export const getVehicle = async (req, res) => {
   const result = await pool.query(
-    "SELECT * FROM Vehiculos WHERE id_vehiculo=?",
+    // "SELECT * FROM Vehiculos WHERE id_vehiculo=?",
+    "SELECT v.id_vehiculo, v.nombre as vehiculoNombre, v.id_proveedor, p.nombre as proveedorNombre, v.anio, v.tipo_combustible, v.num_puertas, v.color, v.precio, v.tipo, v.imagen FROM Vehiculos v INNER JOIN Proveedores p ON v.id_proveedor = p.id_proveedor WHERE id_vehiculo=?",
     [req.params.id]
   );
   if (result.length <= 0) throw new Error("Vehiculo no encontrado");
