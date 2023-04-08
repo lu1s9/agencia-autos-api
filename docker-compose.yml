@@ -3,6 +3,9 @@ version: "3.9"
 services:
   web:
     build: .
+    depends_on:
+      mariadb:
+        condition: service_healthy
     ports:
       - 3001:3000
     environment:
@@ -12,9 +15,16 @@ services:
       - DB_PORT=3306
       - DB_DATABASE=agencia_autos
       - PORT=3000
+      - NODE_ENV=production
     links:
       - mariadb
   mariadb:
+    healthcheck:
+      test: "mariadb -uluis -pMuchoTexto2023"
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     image: mariadb:latest
     ports:
       - 3307:3306
